@@ -1,0 +1,6 @@
+interface:
+  display_name: "Rabbit-Hole Research"
+  short_description: "Controlled deep research with source backing"
+  default_prompt: "Use $rabbit-hole-research to research this question with source-backed synthesis, explicit stop rules, and a final audit."
+policy:
+  allow_implicit_invocation: true

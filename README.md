@@ -1,28 +1,64 @@
 # rabbit-hole-research
 
-Production Codex skill for controlled deep research, Obsidian-ready knowledge bases, and long-horizon `/goal` research.
+Agent skill for controlled deep research, source-backed synthesis, Obsidian-ready knowledge bases, and long-horizon Goal-mode research.
 
 This package is runtime-only and git-ready. It excludes development evals, package audit scripts, prior-art build notes, and other maintenance artifacts.
 
 ## Install
 
-User-level install:
+Important: the installed skill directory should be named `rabbit-hole-research`.
+The GitHub repository is named `rabbit-hole-research-skill`, but Claude Code uses the installed directory name as the slash command name, and Codex UI discovery is most reliable when the folder and `SKILL.md` name match.
+
+### Codex
+
+From Codex, install the repository root as the skill named `rabbit-hole-research`:
 
 ```bash
-mkdir -p ~/.agents/skills
-cp -R rabbit-hole-research ~/.agents/skills/
+python3 ~/.codex/skills/.system/skill-installer/scripts/install-skill-from-github.py \
+  --repo ROOKI-BAZOOKI/rabbit-hole-research-skill \
+  --path . \
+  --name rabbit-hole-research
 ```
 
-Repo-level install:
+Manual install:
 
 ```bash
-mkdir -p .agents/skills
-cp -R rabbit-hole-research .agents/skills/
+tmpdir="$(mktemp -d)"
+git clone https://github.com/ROOKI-BAZOOKI/rabbit-hole-research-skill "$tmpdir/rabbit-hole-research-skill"
+mkdir -p ~/.codex/skills
+rsync -a --exclude .git "$tmpdir/rabbit-hole-research-skill/" ~/.codex/skills/rabbit-hole-research/
 ```
+
+Restart Codex after installing or updating the skill so the palette and skill list refresh.
+
+### Claude Code
+
+Personal install:
+
+```bash
+tmpdir="$(mktemp -d)"
+git clone https://github.com/ROOKI-BAZOOKI/rabbit-hole-research-skill "$tmpdir/rabbit-hole-research-skill"
+mkdir -p ~/.claude/skills/rabbit-hole-research
+rsync -a --exclude .git "$tmpdir/rabbit-hole-research-skill/" ~/.claude/skills/rabbit-hole-research/
+```
+
+Project install:
+
+```bash
+tmpdir="$(mktemp -d)"
+git clone https://github.com/ROOKI-BAZOOKI/rabbit-hole-research-skill "$tmpdir/rabbit-hole-research-skill"
+mkdir -p .claude/skills/rabbit-hole-research
+rsync -a --exclude .git "$tmpdir/rabbit-hole-research-skill/" .claude/skills/rabbit-hole-research/
+```
+
+Claude Code invokes the skill as `/rabbit-hole-research`.
+No separate `.claude/commands/` file is needed; Claude Code skills already create slash commands and support bundled files through the skill directory.
 
 ## Use
 
-Invoke explicitly with `$rabbit-hole-research` or describe a deep research task that matches the skill description.
+Codex: invoke explicitly with `$rabbit-hole-research` or choose `Rabbit-Hole Research` from the skill palette.
+
+Claude Code: invoke explicitly with `/rabbit-hole-research` or describe a deep research task that matches the skill description.
 
 For long AFK runs, first let the skill create the research contract and durable control files, then activate `/goal` only after acceptance criteria, evidence standards, budget behavior, and stop rules are clear.
 
@@ -36,12 +72,15 @@ If the task explicitly asks for existing tools, repos, implementations, workflow
 - `references/obsidian-output.md` — Obsidian note and vault structure.
 - `assets/goal-contract-template.md` — durable Goal contract template.
 - `assets/research-control-template.md` — durable research control template.
+- `agents/openai.yaml` — Codex UI metadata for skill lists and chips.
 - `LICENSE` — MIT license matching the `SKILL.md` metadata.
 - `.gitignore` — minimal local scratch/cache ignores for repo use.
 
 ## Architecture
 
-Version 1.0.0 is the minimal git-ready runtime build. It keeps the base-pipeline-plus-overlays architecture, removes the dedicated GitHub/prior-art overlay, and folds the final quality gate into `SKILL.md` instead of shipping a separate audit reference.
+Version 1.0.1 keeps the base-pipeline-plus-overlays architecture and uses a short portable frontmatter block so Codex and Claude Code can index the skill reliably.
+
+The detailed trigger logic lives in the `SKILL.md` body and references instead of an overlong YAML description. This keeps startup metadata small and avoids palette/indexing problems in clients that only read a short prefix of `SKILL.md`.
 
 ## License
 
